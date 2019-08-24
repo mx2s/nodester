@@ -1,7 +1,7 @@
 const express = require('express');
 const fs = require('fs');
 const join = require('path').join;
-const uuidv1 = require('uuid/v1');
+const uuidv4 = require('uuid/v4');
 
 var mongoose = require('mongoose');
 
@@ -33,21 +33,27 @@ app.get("/", (req, res, next) => {
     });
 });
 
-app.get("/post/new", (req, res, next) => {
+app.get("/post/new", async (req, res, next) => {
     var newPost = new Post({
-        uuid: uuidv1(),
+        uuid: uuidv4(),
         title: "some post",
         content: "post content"
     });
     newPost.save();
 
-    res.json({
+    let totalCount = 0;
+
+    await Post.countDocuments({}, function (err, c) {
+        totalCount = c;
+    });
+
+    await res.json({
         "status": 201,
         "data": {
             "post": newPost
         },
         "meta": {
-            "total_count": 0
+            "total_count": totalCount
         }
     });
 });
