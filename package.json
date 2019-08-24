@@ -12,6 +12,7 @@
   "dependencies": {
     "express": "^4.17.1",
     "mongodb": "^3.3.0",
-    "mongoose": "^5.6.10"
+    "mongoose": "^5.6.10",
+    "uuid": "^3.3.3"
   }
 }

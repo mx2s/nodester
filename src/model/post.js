@@ -8,11 +8,13 @@ const PostModelSchema = new Schema({
     content: String
 });
 
-let PostModel = mongoose.model('PostModel', PostModelSchema );
-
 PostModelSchema.methods = {
     create(data) {
-        let newModel = new PostModel(data);
+        let newModel = new Post(data);
         newModel.save();
-    }
+    },
 };
+
+PostModelSchema.statics = {};
+
+const Post = mongoose.model('Post', PostModelSchema);
