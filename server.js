@@ -1,9 +1,9 @@
 const express = require('express');
 const fs = require('fs');
 const join = require('path').join;
-const uuidv4 = require('uuid/v4');
+const uuidV4 = require('uuid/v4');
 
-var mongoose = require('mongoose');
+let mongoose = require('mongoose');
 
 const models = join(__dirname, 'src/model');
 
@@ -14,7 +14,7 @@ fs.readdirSync(models)
 
 const Post = mongoose.model('Post');
 
-var mongoDBurl = 'mongodb://127.0.0.1:27017/example_mongo';
+const mongoDBurl = 'mongodb://127.0.0.1:27017/example_mongo';
 
 mongoose.connect(mongoDBurl, { useNewUrlParser: true });
 
@@ -33,19 +33,22 @@ app.get("/", (req, res, next) => {
     });
 });
 
-app.get("/post/new", async (req, res, next) => {
-    var newPost = new Post({
-        uuid: uuidv4(),
+app.get("/api/v1/posts/get", async (req, res, next) => {
+    await res.json({
+        "status": 201,
+        "data": {
+            "posts": await Post.find({})
+        },
+    });
+});
+
+app.post("/api/v1/post/new", async (req, res, next) => {
+    let newPost = new Post({
+        uuid: uuidV4(),
         title: "some post",
         content: "post content"
     });
-    newPost.save();
-
-    let totalCount = 0;
-
-    await Post.countDocuments({}, function (err, c) {
-        totalCount = c;
-    });
+    await newPost.save();
 
     await res.json({
         "status": 201,
@@ -53,7 +56,7 @@ app.get("/post/new", async (req, res, next) => {
             "post": newPost
         },
         "meta": {
-            "total_count": totalCount
+            "total_count": await Post.count()
         }
     });
 });

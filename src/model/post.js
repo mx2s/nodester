@@ -15,6 +15,14 @@ PostModelSchema.methods = {
     },
 };
 
-PostModelSchema.statics = {};
+PostModelSchema.statics = {
+    async count(data = {}) {
+        let totalCount = 0;
+        await Post.countDocuments(data, function (err, c) {
+            totalCount = c;
+        });
+        return totalCount;
+    }
+};
 
 const Post = mongoose.model('Post', PostModelSchema);
