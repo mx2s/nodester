@@ -2,8 +2,9 @@ const express = require('express');
 const fs = require('fs');
 const join = require('path').join;
 const uuidV4 = require('uuid/v4');
-
 let mongoose = require('mongoose');
+
+const PostTransformer = require("./src/transformer/post/post_transformer");
 
 const models = join(__dirname, 'src/model');
 
@@ -28,16 +29,18 @@ const port = 8000;
 
 app.get("/", (req, res, next) => {
     res.json({
-        "status": 200,
-        "data": {}
+        "data": {
+            "status": "ok",
+            "api_version": 1
+        }
     });
 });
 
 app.get("/api/v1/posts/get", async (req, res, next) => {
+    let posts = await Post.find({}).limit(10);
     await res.json({
-        "status": 201,
         "data": {
-            "posts": await Post.find({})
+            "posts": PostTransformer.transformMany(posts)
         },
     });
 });
@@ -48,12 +51,12 @@ app.post("/api/v1/post/new", async (req, res, next) => {
         title: "some post",
         content: "post content"
     });
-    await newPost.save();
+    newPost.save();
 
+    res.status(201);
     await res.json({
-        "status": 201,
         "data": {
-            "post": newPost
+            "post": PostTransformer.transform(newPost)
         },
         "meta": {
             "total_count": await Post.count()
