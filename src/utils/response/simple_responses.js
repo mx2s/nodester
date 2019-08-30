@@ -12,10 +12,12 @@ module.exports = {
     async error(res, message, status = 200) {
         res.status(status);
         await res.json({
-            "data": {
-                "status": status,
-                "message": message
-            }
+            "errors": [
+                {
+                    "status": status,
+                    "message": message
+                }
+            ]
         });
         res.end();
     }

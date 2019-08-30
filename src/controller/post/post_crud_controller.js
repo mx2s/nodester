@@ -74,16 +74,23 @@ module.exports = {
     },
     delete: async (req, res) => {
         let post = null;
-        await Post.findOne({uuid: req.body.uuid}, function (err, item) {
+        await Post.findOne({uuid: req.query.uuid}, function (err, item) {
             post = item;
         });
         if (!post) {
             await SimpleResponses.error(res, "Post not found", 404);
             return;
         }
+
+        let deletedPost = Object.assign(post);
+
+        await post.delete(function (err) {
+            console.log(err);
+        });
+
         await res.json({
             "data": {
-                "deleted_post": null
+                "deleted_post": PostTransformer.transform(deletedPost)
             }
         });
     }
