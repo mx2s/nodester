@@ -1,5 +1,5 @@
-const fs = require('fs');
 const join = require('path').join;
+const fsUtils = require("./../../utils/fs/fs_utils");
 
 let mongoose = require('mongoose');
 
@@ -7,12 +7,11 @@ const mongoDBurl = 'mongodb://127.0.0.1:27017/example_mongo'; // TODO: get from 
 
 let _connection;
 
-const models = join(__dirname, '../../model');
+const rootPath = join(__dirname, '../../..');
 
-// Bootstrap models
-fs.readdirSync(models)
-    .filter(file => ~file.search(/^[^.].*\.js$/))
-    .forEach(file => require(join(models, file)));
+let modelPaths = fsUtils.getAllFilesRecursively("src/model", ".js");
+
+modelPaths.forEach(file => require(join(rootPath, file)));
 
 module.exports = {
     initDb() {
