@@ -18,6 +18,8 @@ module.exports = {
 
         app.post("/api/v1/post/new", PostCrudController.create);
 
+        app.get("/api/v1/post/get", PostCrudController.get);
+
         app.patch("/api/v1/post/edit", PostCrudController.edit);
 
         app.delete("/api/v1/post/delete", PostCrudController.delete);

@@ -33,6 +33,22 @@ module.exports = {
             }
         });
     },
+    get: async (req, res) => {
+        let post = null;
+        await Post.findOne({uuid: req.query.uuid}, function (err, item) {
+            post = item;
+        });
+        if (!post) {
+            await SimpleResponses.error(res, "Post not found", 404);
+            return;
+        }
+
+        await res.json({
+            "data": {
+                "post": PostTransformer.transform(post)
+            }
+        });
+    },
     edit: async (req, res) => {
         let post = null;
         await Post.findOne({uuid: req.body.uuid}, function (err, item) {
