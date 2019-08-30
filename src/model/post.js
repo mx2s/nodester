@@ -3,9 +3,9 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const PostModelSchema = new Schema({
-    uuid: String,
-    title: String,
-    content: String
+    uuid:       { type: String, required: true },
+    title:      { type: String, required: true, trim: true, minlength: 2 },
+    content:    { type: String, required: true, trim: true, minlength: 10 }
 });
 
 PostModelSchema.methods = {

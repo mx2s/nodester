@@ -1,27 +1,33 @@
 const express = require('express');
+const bodyParser = require('body-parser');
 let DbConnection = require("./src/module/db/connection");
-
-const PostController = require("./src/controller/post/post_controller");
-const PostCrudController = require("./src/controller/post/post_crud_controller");
+let appRoutes = require("./src/config/routes");
 
 DbConnection.initDb();
 
 const app = express();
 
-const port = 8000;
+let globalMiddleware = function (req, res, next) {
+    console.log(req.url);
+    next()
+};
 
-app.get("/", (req, res) => {
-    res.json({
-        "data": {
-            "status": "ok",
-            "api_version": 1
-        }
-    });
+app.use(globalMiddleware);
+
+process.on('unhandledRejection', error => {
+    if (error.stack) {
+        console.error(error.message);
+        console.error(error.stack);
+    }
 });
 
-app.get("/api/v1/posts/get", PostController.getPosts);
+app.use(bodyParser.urlencoded({
+    extended: true
+}));
 
-app.post("/api/v1/post/new", PostCrudController.create);
+const port = 8000;
+
+appRoutes.init(app);
 
 app.listen(port, () => {
     console.log('App started on port: ' + port);
