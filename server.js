@@ -32,3 +32,9 @@ appRoutes.init(app);
 app.listen(port, () => {
     console.log('App started on port: ' + port);
 });
+
+module.exports = {
+    getApp() {
+        return app;
+    }
+};

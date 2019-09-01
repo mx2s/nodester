@@ -1,9 +1,12 @@
 const join = require('path').join;
 const fsUtils = require("./../../utils/fs/fs_utils");
+const config = require("../../../config.json");
+
+const appConfig = config[process.env.NODE_ENV];
 
 let mongoose = require('mongoose');
 
-const mongoDBurl = 'mongodb://127.0.0.1:27017/example_mongo'; // TODO: get from config
+const mongoDBurl = `mongodb://${appConfig.database.host}:${appConfig.database.port}/${appConfig.database.name}`;
 
 let _connection;
 
@@ -18,9 +21,19 @@ module.exports = {
         mongoose.connect(mongoDBurl, { useNewUrlParser: true });
         _connection = mongoose.connection;
 
+        _connection.on('open', () => {
+            this.dropDatabase();
+        });
         _connection.on('error', console.error.bind(console, 'MongoDB connection error:'));
     },
     getConnection() {
         return _connection;
+    },
+    dropDatabase() {
+        if (process.env.NODE_ENV === 'testing') {
+            this.getConnection().dropDatabase()
+        } else {
+            console.error('Database can only be dropped in testing environment, drop it manually')
+        }
     }
 };
