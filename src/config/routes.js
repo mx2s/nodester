@@ -1,5 +1,6 @@
 let express = require('express');
 let router = express.Router();
+let SimpleResponses = require('../utils/response/simple_responses');
 let jwt = require('../module/auth/jwt');
 
 const PostController = require("./../controller/post/post_controller");
@@ -19,11 +20,13 @@ module.exports = {
         // --- POSTS ---
 
         // TODO: move to separate module
-        router.get("/api/v1/posts/get", (req, res) => {
-            let authResult = null;
-
-            jwt.isUserLoggedIn(req).then(() => {
-                next()
+        router.get("/api/v1/posts/get", (req, res, next) => {
+            jwt.isUserLoggedIn(req).then((authorized) => {
+                if (authorized) {
+                    next();
+                } else {
+                    SimpleResponses.error(res, "Not authorized", 401).then();
+                }
             });
         }, PostController.getPosts);
 
