@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const PostModelSchema = new Schema({
-    uuid:       { type: String, required: true },
+    uuid:       { type: String, required: true, unique: true },
     title:      { type: String, required: true, trim: true, minlength: 2 },
     content:    { type: String, required: true, trim: true, minlength: 10 }
 });
