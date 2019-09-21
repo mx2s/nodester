@@ -1,5 +1,7 @@
+let DbConnection = require("../src/module/db/connection");
+
 function beforeEach() {
-    console.log('before each!');
+    DbConnection.dropDatabase();
 }
 
 beforeEach();

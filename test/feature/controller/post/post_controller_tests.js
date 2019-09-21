@@ -1,7 +1,7 @@
 let chai = require('chai');
 let chaiHttp = require('chai-http');
-let server = require('../../../server');
-const PostFactory = require('../../../src/utils/factory/model/post/post_factory');
+let server = require('../../../../server');
+const PostFactory = require('../../../../src/utils/factory/model/post/post_factory');
 
 chai.use(chaiHttp);
 chai.should();
@@ -30,9 +30,6 @@ describe("PostController", () => {
                     chai.assert.equal(firstPost.title, post.title);
                     chai.assert.equal(firstPost.content, post.content);
                 });
-        });
-        it("should log stuff", async function () {
-            console.log("log stuff");
         });
     });
 });

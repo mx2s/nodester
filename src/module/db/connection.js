@@ -18,7 +18,7 @@ modelPaths.forEach(file => require(join(rootPath, file)));
 
 module.exports = {
     initDb() {
-        mongoose.connect(mongoDBurl, { useNewUrlParser: true });
+        mongoose.connect(mongoDBurl, { useNewUrlParser: true, useUnifiedTopology: true });
         _connection = mongoose.connection;
 
         _connection.on('open', () => {
@@ -33,7 +33,7 @@ module.exports = {
         if (process.env.NODE_ENV === 'testing') {
             this.getConnection().dropDatabase()
         } else {
-            console.error('Database can only be dropped in testing environment, drop it manually')
+            console.warn('Database can only be dropped in testing environment, drop it manually')
         }
     }
 };
