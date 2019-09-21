@@ -51,7 +51,7 @@ module.exports = {
     },
     edit: async (req, res) => {
         let post = null;
-        await Post.findOne({uuid: req.body.uuid}, function (err, item) {
+        await Post.findOne({uuid: req.query.uuid}, function (err, item) {
             post = item;
         });
         if (!post) {
