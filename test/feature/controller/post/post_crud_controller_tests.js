@@ -5,6 +5,7 @@ let mongoose = require('mongoose');
 
 const uuidV4 = require('uuid/v4');
 const PostFactory = require('../../../../src/utils/factory/model/post/post_factory');
+const UserFactory = require('../../../../src/utils/factory/model/user/user_factory');
 
 chai.use(chaiHttp);
 chai.should();
@@ -45,8 +46,10 @@ describe("PostCrudController", () => {
             let newTitle = "new title";
             let newContent = "new content";
 
+            let user = await UserFactory.createOne();
+
             chai.request(app)
-                .post('/api/v1/post/new')
+                .post('/api/v1/post/new?api_token=' + user.api_token)
                 .type('form')
                 .send({
                     title: newTitle,
@@ -76,8 +79,10 @@ describe("PostCrudController", () => {
             let newTitle = "updated title";
             let newContent = "updated content";
 
+            let user = await UserFactory.createOne();
+
             chai.request(app)
-                .patch('/api/v1/post/edit?uuid=' + post.uuid)
+                .patch('/api/v1/post/edit?uuid=' + post.uuid  + '&api_token=' + user.api_token)
                 .type('form')
                 .send({
                     title: newTitle,
@@ -97,28 +102,31 @@ describe("PostCrudController", () => {
                     chai.assert.should.not.equal(responsePost.content, post.content);
                 });
         });
-        it("should return 404 if post does not exist", async function () {
+        it("should return 401 if not authorized", async function () {
             chai.request(app)
                 .patch('/api/v1/post/edit?uuid=' + uuidV4())
                 .end((err, res) => {
-                    res.should.have.status(404);
+                    res.should.have.status(401);
                 });
         });
     });
     describe("DELETE /api/v1/post/delete", () => {
         it("should delete post", async function () {
             let post = await PostFactory.createOne();
+
+            let user = await UserFactory.createOne();
+
             chai.request(app)
-                .delete('/api/v1/post/delete?uuid=' + post.uuid)
+                .delete('/api/v1/post/delete?uuid=' + post.uuid + '&api_token=' + user.api_token)
                 .end((err, res) => {
                     res.should.have.status(200);
                 });
         });
-        it("should return 404 if post does not exist", async function () {
+        it("should return 401 not authorized", async function () {
             chai.request(app)
                 .delete('/api/v1/post/delete?uuid=' + uuidV4())
                 .end((err, res) => {
-                    res.should.have.status(404);
+                    res.should.have.status(401);
                 });
         });
     });
