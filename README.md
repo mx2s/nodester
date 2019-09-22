@@ -4,7 +4,7 @@ Example api (cheatsheet) built with node js / express / mongoose
 
 ## Implemented features
 - Rest API
-- Multiple environment
+- Multiple environments
 - Transformers
 - JWT Auth
 
