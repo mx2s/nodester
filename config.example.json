@@ -4,6 +4,9 @@
       "name": "example_mongo",
       "host": "127.0.0.1",
       "port": 27017
+    },
+    "auth": {
+      "secret_key": "fk290F21FJ12g12RT"
     }
   },
   "testing": {
@@ -11,6 +14,9 @@
       "name": "example_mongo_test",
       "host": "127.0.0.1",
       "port": 27017
+    },
+    "auth": {
+      "secret_key": "fk290F21FJ12g12RT"
     }
   }
 }
