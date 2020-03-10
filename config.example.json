@@ -1,7 +1,7 @@
 {
   "development": {
     "database": {
-      "name": "example_mongo",
+      "name": "nodester",
       "host": "127.0.0.1",
       "port": 27017
     },
@@ -11,7 +11,7 @@
   },
   "testing": {
     "database": {
-      "name": "example_mongo_test",
+      "name": "nodester_test",
       "host": "127.0.0.1",
       "port": 27017
     },

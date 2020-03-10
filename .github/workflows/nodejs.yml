@@ -3,20 +3,16 @@
 
 name: Node.js CI
 
-on:
-  push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+on: [push, pull_request]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        node-version: [10.x, 12.x]
+        node-version: [10.x, 12.x, 13.x]
+        mongodb-version: [4.2]
 
     steps:
     - uses: actions/checkout@v2
@@ -24,8 +20,13 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - run: npm ci
-    - run: npm run build --if-present
-    - run: npm test
+    - name: Start MongoDB v${{ matrix.mongodb-version }}
+      uses: superchargejs/mongodb-github-action@1.1.0
+      with:
+        mongodb-version: ${{ matrix.mongodb-version }}
+    - run: cp config.example.json config.json
+    - run: npm install -g yarn
+    - run: yarn
+    - run: yarn test
       env:
         CI: true
