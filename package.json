@@ -4,7 +4,7 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "test": "NODE_ENV=testing mocha --recursive --exit",
+    "test": "NODE_ENV=testing mocha --recursive --timeout 20000 --exit",
     "start": "node server.js"
   },
   "author": "",
