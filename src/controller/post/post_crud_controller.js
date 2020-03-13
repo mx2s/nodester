@@ -34,10 +34,7 @@ module.exports = {
         });
     },
     get: async (req, res) => {
-        let post = null;
-        await Post.findOne({uuid: req.query.uuid}, function (err, item) {
-            post = item;
-        });
+        let post = await Post.findOne({uuid: req.query.uuid});
         if (!post) {
             await SimpleResponses.error(res, "Post not found", 404);
             return;
@@ -50,10 +47,7 @@ module.exports = {
         });
     },
     edit: async (req, res) => {
-        let post = null;
-        await Post.findOne({uuid: req.query.uuid}, function (err, item) {
-            post = item;
-        });
+        let post = Post.findOne({uuid: req.query.uuid});
         if (!post) {
             await SimpleResponses.error(res, "Post not found", 404);
             return;
@@ -62,9 +56,7 @@ module.exports = {
         post.title = req.body.title;
         post.content = req.body.content;
 
-        await post.save(function (err) {
-            console.log(err);
-        });
+        await post.save();
 
         await res.json({
             "data": {
@@ -73,20 +65,14 @@ module.exports = {
         });
     },
     delete: async (req, res) => {
-        let post = null;
-        await Post.findOne({uuid: req.query.uuid}, function (err, item) {
-            post = item;
-        });
+        let post = await Post.findOne({uuid: req.query.uuid});
         if (!post) {
             await SimpleResponses.error(res, "Post not found", 404);
             return;
         }
 
         let deletedPost = Object.assign(post);
-
-        await post.delete(function (err) {
-            console.log(err);
-        });
+        await post.delete(err => console.error(err));
 
         await res.json({
             "data": {

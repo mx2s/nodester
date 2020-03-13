@@ -2,6 +2,7 @@ let chai = require('chai');
 let chaiHttp = require('chai-http');
 let server = require('../../../../server');
 let mongoose = require('mongoose');
+let Jwt = require('../../../../src/module/auth/jwt');
 
 const uuidV4 = require('uuid/v4');
 const PostFactory = require('../../../../src/utils/factory/model/post/post_factory');
@@ -48,28 +49,25 @@ describe("PostCrudController", () => {
 
             let user = await UserFactory.createOne();
 
-            chai.request(app)
+            let res = await chai.request(app)
                 .post('/api/v1/post/new?api_token=' + user.api_token)
                 .type('form')
                 .send({
                     title: newTitle,
                     content: newContent
-                })
-                .end((err, res) => {
-                    res.should.have.status(201);
-
-                    let responsePost = res.body.data.post;
-
-                    responsePost.should.be.a('object');
-
-                    chai.assert.equal(responsePost.title, newTitle);
-                    chai.assert.equal(responsePost.content, newContent);
-
-
-                    mongoose.model('Post').findOne({uuid: responsePost.uuid}, function (err, createdPost) {
-                        chai.assert.equal(responsePost.uuid, createdPost.uuid);
-                    });
                 });
+
+            res.should.have.status(201);
+
+            let responsePost = res.body.data.post;
+
+            responsePost.should.be.a('object');
+
+            chai.assert.equal(responsePost.title, newTitle);
+            chai.assert.equal(responsePost.content, newContent);
+
+            let createdPost = await mongoose.model('Post').findOne({uuid: responsePost.uuid});
+            chai.assert.equal(responsePost.uuid, createdPost.uuid);
         });
     });
     describe("PATCH /api/v1/post/edit", () => {
@@ -84,6 +82,7 @@ describe("PostCrudController", () => {
             chai.request(app)
                 .patch('/api/v1/post/edit?uuid=' + post.uuid  + '&api_token=' + user.api_token)
                 .type('form')
+                .set('Authorization', `bearer ${Jwt.encrypt(user.uuid)}`)
                 .send({
                     title: newTitle,
                     content: newContent

@@ -35,15 +35,6 @@ module.exports.isUserLoggedIn = async function (req) {
 
 module.exports.getRequestUser = async function (req) {
     let uuid = module.exports.getUserUuid(req.query.api_token);
-    if (uuid === null) {
-        return null;
-    }
-
-    let loggedInUser = null;
-
-    await User.findOne({uuid: uuid}, function (err, item) {
-        loggedInUser = item;
-    });
-
-    return loggedInUser;
+    if (!uuid) return null;
+    return User.findOne({uuid: uuid});
 };

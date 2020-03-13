@@ -17,11 +17,7 @@ PostModelSchema.methods = {
 
 PostModelSchema.statics = {
     async count(data = {}) {
-        let totalCount = 0;
-        await Post.countDocuments(data, function (err, c) {
-            totalCount = c;
-        });
-        return totalCount;
+        return await Post.countDocuments(data);
     }
 };
 
